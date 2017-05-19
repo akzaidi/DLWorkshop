@@ -81,6 +81,7 @@ start_time = time.time()
 for _ in range(0, int(num_minibatches_to_train)):
     data = reader_train.next_minibatch(minibatch_size, input_map = input_map)
     trainer.train_minibatch(data)
+print(time.time() - start_time)
 
 # Model validation
 # Read the validation data

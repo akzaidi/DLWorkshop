@@ -7,8 +7,8 @@ import cntk as C
 import time
 from cntk.logging.progress_print import ProgressPrinter
 
-C.device.try_set_default_device(C.device.cpu())
-#C.device.try_set_default_device(C.device.gpu(0))
+#C.device.try_set_default_device(C.device.cpu())
+C.device.try_set_default_device(C.device.gpu(0))
 
 # Ensure we always get the same amount of randomness
 np.random.seed(0)
@@ -57,7 +57,7 @@ num_sweeps_to_train_with = 10
 num_minibatches_to_train = (num_samples_per_sweep * num_sweeps_to_train_with) / minibatch_size
 
 # Create the reader to training data set
-train_file = "Data/MNIST_train.txt"
+train_file = "../../Data/MNIST_train.txt"
 reader_train = create_reader(train_file, True, input_dim, num_output_classes)
 
 # Map the data streams to the input and labels.
@@ -75,16 +75,15 @@ for i in range(0, int(num_minibatches_to_train)):
 
 print(time.time() - start_time)
 
-# Read the validation data
-test_file = "Data/MNIST_validate.txt"
-reader_test = create_reader(test_file, False, input_dim, num_output_classes)
+# Evaluate the model
+validation_file = "../../Data/MNIST_validate.txt"
+reader_test = create_reader(validation_file, False, input_dim, num_output_classes)
 
 test_input_map = {
     label  : reader_test.streams.labels,
     input  : reader_test.streams.features,
 }
 
-# Test data for trained model
 test_minibatch_size = 512
 num_samples = 10000
 num_minibatches_to_test = num_samples // test_minibatch_size
@@ -98,26 +97,29 @@ for i in range(num_minibatches_to_test):
 # Average of evaluation errors of all test minibatches
 print("Average validation error: {0:.2f}%".format(test_result*100 / num_minibatches_to_test))
 
+#
+# Final evaluation of a hackathon
+#
+def test_model(model):
+    test_file = '../../Data/MNIST_test.txt'
+    labels = C.input(10)
+    features = [v for v in model.inputs if v.is_input][0]
+    reader_test = create_reader(test_file, False, features.shape[0], labels.shape[0])
+    evaluator = C.Evaluator(C.classification_error(model, labels))
+    test_input_map = {
+       features : reader_test.streams.features,
+       labels: reader_test.streams.labels
+    }
+    
+    test_minibatch_size = 512
+    num_samples = 10000
+    num_minibatches_to_test = num_samples // test_minibatch_size
+    test_result = 0.0
 
-# Read the test data set
-test_file = "Data/MNIST_test.txt"
-reader_test = create_reader(test_file, False, input_dim, num_output_classes)
+    for _ in range(num_minibatches_to_test):
+        data = reader_test.next_minibatch(test_minibatch_size, input_map = test_input_map)
+        test_result = test_result + evaluator.test_minibatch(data)
 
-test_input_map = {
-    label  : reader_test.streams.labels,
-    input  : reader_test.streams.features,
-}
+    # Average of evaluation errors of all test minibatches
+    print("Average test error: {0:.2f}%".format(test_result*100 / num_minibatches_to_test))
 
-# Test data for trained model
-test_minibatch_size = 512
-num_samples = 10000
-num_minibatches_to_test = num_samples // test_minibatch_size
-test_result = 0.0
-
-for i in range(num_minibatches_to_test):
-    data = reader_test.next_minibatch(test_minibatch_size, input_map = test_input_map)
-    eval_error = trainer.test_minibatch(data)
-    test_result = test_result + eval_error
-
-# Average of evaluation errors of all test minibatches
-print("Average test error: {0:.2f}%".format(test_result*100 / num_minibatches_to_test))
