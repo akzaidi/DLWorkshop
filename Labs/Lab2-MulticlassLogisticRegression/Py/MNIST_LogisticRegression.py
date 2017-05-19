@@ -21,6 +21,25 @@ def create_reader(path, is_training, input_dim, num_label_classes):
     return C.io.MinibatchSource(deserializer,
        randomize = is_training, max_sweeps = C.io.INFINITELY_REPEAT if is_training else 1)
 
+# Evaluate the model using a given test file
+def evaluate_model(model, features, labels, test_file):
+    reader = create_reader(test_file, False, features.shape[0], labels.shape[0])
+    evaluator = C.Evaluator(C.classification_error(model, labels))
+    test_input_map = {
+       features : reader.streams.features,
+       labels: reader.streams.labels
+    }
+    
+    minibatch_size = 2000
+    test_result = 0.0
+    num_minibatches = 0
+    data = reader.next_minibatch(minibatch_size, input_map = input_map)
+    while bool(data):
+        test_result = test_result + evaluator.test_minibatch(data)
+        num_minibatches += 1
+        data = reader.next_minibatch(minibatch_size, input_map = input_map)
+    return None if num_minibatches == 0 else test_result*100 / num_minibatches
+
 # Define a computational network for multi-class logistic regression
 def create_mlr_model(features, output_dim):
     input_dim = features.shape[0]
@@ -33,26 +52,26 @@ input_dim = 784
 num_output_classes = 10
 
 # Define features and labels
-input = C.input(input_dim)
-label = C.input(num_output_classes)
+features = C.input(input_dim)
+labels = C.input(num_output_classes)
 
 # Scale the input to 0-1 range by dividing each pixel by 255.
-z = create_mlr_model(input/255.0, num_output_classes)
+z = create_mlr_model(features/255.0, num_output_classes)
 
 # Define loss and error functions
-loss = C.cross_entropy_with_softmax(z, label)
-label_error = C.classification_error(z, label)
+loss = C.cross_entropy_with_softmax(z, labels)
+error = C.classification_error(z, labels)
 
 # Instantiate the trainer object to drive the model training
 learning_rate = 0.2
 lr_schedule = C.learning_rate_schedule(learning_rate, C.UnitType.minibatch)
 learner = C.sgd(z.parameters, lr_schedule)
 progress_printer = ProgressPrinter(500)
-trainer = C.Trainer(z, (loss, label_error), [learner], [progress_printer])
+trainer = C.Trainer(z, (loss, error), [learner], [progress_printer])
 
 # Initialize the parameters for the trainer
 minibatch_size = 64
-num_samples_per_sweep = 60000
+num_samples_per_sweep = 50000
 num_sweeps_to_train_with = 10
 num_minibatches_to_train = (num_samples_per_sweep * num_sweeps_to_train_with) / minibatch_size
 
@@ -62,64 +81,27 @@ reader_train = create_reader(train_file, True, input_dim, num_output_classes)
 
 # Map the data streams to the input and labels.
 input_map = {
-    label  : reader_train.streams.labels,
-    input  : reader_train.streams.features
+    labels  : reader_train.streams.labels,
+    features  : reader_train.streams.features
 } 
 
-start_time = time.time()
 # Run the trainer on and perform model training
+start_time = time.time()
 for i in range(0, int(num_minibatches_to_train)):
-    # Read a mini batch from the training data file
     data = reader_train.next_minibatch(minibatch_size, input_map = input_map)
     trainer.train_minibatch(data)
 
 print(time.time() - start_time)
 
+
 # Evaluate the model
 validation_file = "../../Data/MNIST_validate.txt"
-reader_test = create_reader(validation_file, False, input_dim, num_output_classes)
 
-test_input_map = {
-    label  : reader_test.streams.labels,
-    input  : reader_test.streams.features,
-}
+error_rate = evaluate_model(z, features, labels, validation_file)
+print("Average validation error: {0:.2f}%".format(error_rate))
 
-test_minibatch_size = 512
-num_samples = 10000
-num_minibatches_to_test = num_samples // test_minibatch_size
-test_result = 0.0
+test_file = '../../Data/MNIST_test.txt'
+error_rate = evaluate_model(z, features, labels, test_file)
+print("Average test error: {0:.2f}%".format(error_rate))
 
-for i in range(num_minibatches_to_test):
-    data = reader_test.next_minibatch(test_minibatch_size, input_map = test_input_map)
-    eval_error = trainer.test_minibatch(data)
-    test_result = test_result + eval_error
-
-# Average of evaluation errors of all test minibatches
-print("Average validation error: {0:.2f}%".format(test_result*100 / num_minibatches_to_test))
-
-#
-# Final evaluation of a hackathon
-#
-def test_model(model):
-    test_file = '../../Data/MNIST_test.txt'
-    labels = C.input(10)
-    features = [v for v in model.inputs if v.is_input][0]
-    reader_test = create_reader(test_file, False, features.shape[0], labels.shape[0])
-    evaluator = C.Evaluator(C.classification_error(model, labels))
-    test_input_map = {
-       features : reader_test.streams.features,
-       labels: reader_test.streams.labels
-    }
-    
-    test_minibatch_size = 512
-    num_samples = 10000
-    num_minibatches_to_test = num_samples // test_minibatch_size
-    test_result = 0.0
-
-    for _ in range(num_minibatches_to_test):
-        data = reader_test.next_minibatch(test_minibatch_size, input_map = test_input_map)
-        test_result = test_result + evaluator.test_minibatch(data)
-
-    # Average of evaluation errors of all test minibatches
-    print("Average test error: {0:.2f}%".format(test_result*100 / num_minibatches_to_test))
 
