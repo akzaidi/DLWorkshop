@@ -85,7 +85,7 @@ train_model_with_SGD(z, features, labels, reader)
 ### Model evaluation
 #
 # Define the evaluater function 
-def evaluate_model(model, features, labels, reader):
+def test_model(model, features, labels, reader):
     evaluator = C.Evaluator(C.classification_error(model, labels))
     input_map = {
        features : reader.streams.features,
@@ -104,7 +104,7 @@ def evaluate_model(model, features, labels, reader):
 
 validation_file = "../../Data/MNIST_validate.txt"
 reader = create_reader(validation_file, False, input_dim, num_output_classes)
-error_rate = evaluate_model(z, features, labels, reader)
+error_rate = test_model(z, features, labels, reader)
 print("Average validation error: {0:.2f}%".format(error_rate))
 
 ### Hackathon evaluation
@@ -113,7 +113,7 @@ print("Average validation error: {0:.2f}%".format(error_rate))
 #
 test_file = '../../Data/MNIST_test.txt'
 reader = create_reader(test_file, False, input_dim, num_output_classes)
-error_rate = evaluate_model(z, features, labels, reader)
+error_rate = test_model(z, features, labels, reader)
 print("Average test error: {0:.2f}%".format(error_rate))
 
 
