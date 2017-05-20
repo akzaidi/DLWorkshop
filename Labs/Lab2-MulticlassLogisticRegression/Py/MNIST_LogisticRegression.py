@@ -1,5 +1,9 @@
-# Import the relevant components
-from __future__ import print_function # Use a function definition from future version (say 3.x from 2.7 interpreter)
+#  Copyright (c) Microsoft. elevant components
+
+#
+# Multi-class Logistic Regression
+#
+
 import numpy as np
 import sys
 import os
@@ -7,13 +11,13 @@ import cntk as C
 import time
 from cntk.logging.progress_print import ProgressPrinter
 
+# Configure the device
 #C.device.try_set_default_device(C.device.cpu())
 C.device.try_set_default_device(C.device.gpu(0))
 
 # Ensure we always get the same amount of randomness
 np.random.seed(0)
 
-### Helper functions
 # Define a reader for the CTF formatted MNIST files 
 def create_reader(path, is_training, input_dim, num_label_classes):
     labelStream = C.io.StreamDef(field='labels', shape=num_label_classes, is_sparse=False)
@@ -23,7 +27,7 @@ def create_reader(path, is_training, input_dim, num_label_classes):
        randomize = is_training, max_sweeps = C.io.INFINITELY_REPEAT if is_training else 1)
 
 # Define a computational network for multi-class logistic regression
-def create_mlr_model(features, output_dim):
+def create_mlr_model(features, num_output_classes):
     input_dim = features.shape[0]
     weight_param = C.parameter(shape=(input_dim, output_dim))
     bias_param = C.parameter(shape=(output_dim))
