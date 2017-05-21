@@ -39,7 +39,7 @@ def create_cnn1_model(features, num_output_classes):
                                    pad = True,
                                    name = 'first_conv')(h)
         h = C.layers.Convolution2D(filter_shape = (5,5),
-                                  num_filters = 8,
+                                  num_filters = 16,
                                   strides = (2, 2),
                                   pad = True,
                                   name = 'second_conv')(h)
@@ -59,7 +59,7 @@ def create_cnn2_model(features, num_output_classes):
                                strides=(2,2),
                                name = "first_max")(h)
         h = C.layers.Convolution2D(filter_shape = (5,5),
-                                  num_filters = 8,
+                                  num_filters = 16,
                                   strides = (2, 2),
                                   pad = True,
                                   name = 'second_conv')(h)
