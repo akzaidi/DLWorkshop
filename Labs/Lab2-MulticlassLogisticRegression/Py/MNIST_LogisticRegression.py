@@ -15,6 +15,10 @@ from cntk.logging.progress_print import ProgressPrinter
 #C.device.try_set_default_device(C.device.cpu())
 C.device.try_set_default_device(C.device.gpu(0))
 
+#
+# Helper functions
+#
+
 # Ensure we always get the same amount of randomness
 np.random.seed(0)
 
@@ -29,12 +33,12 @@ def create_reader(path, is_training, input_dim, num_label_classes):
 # Define a computational network for multi-class logistic regression
 def create_mlr_model(features, num_output_classes):
     input_dim = features.shape[0]
-    weight_param = C.parameter(shape=(input_dim, output_dim))
-    bias_param = C.parameter(shape=(output_dim))
+    weight_param = C.parameter(shape=(input_dim, num_output_classes))
+    bias_param = C.parameter(shape=(num_output_classes))
     return C.times(features, weight_param) + bias_param
 
-# Define a trainer using a given reader and the SGD learner 
-def train_model_with_SGD(model, features, labels, reader):
+# Define a trainer using  the SGD learner 
+def train_model_with_SGD(model, features, labels, reader, num_samples_per_sweep, num_sweeps):
  
     # Define loss and error functions
     loss = C.cross_entropy_with_softmax(model, labels)
@@ -49,9 +53,7 @@ def train_model_with_SGD(model, features, labels, reader):
 
    # Initialize the parameters for the trainer
     minibatch_size = 64
-    num_samples_per_sweep = 50000
-    num_sweeps_to_train_with = 10
-    num_minibatches_to_train = (num_samples_per_sweep * num_sweeps_to_train_with) / minibatch_size
+    num_minibatches_to_train = (num_samples_per_sweep * num_sweeps) / minibatch_size
 
        # Map the data streams to the input and labels.
     input_map = {
@@ -66,6 +68,24 @@ def train_model_with_SGD(model, features, labels, reader):
         trainer.train_minibatch(data)
 
     print(time.time() - start_time)
+
+# Define the evaluator function 
+def test_model(model, features, labels, reader):
+    evaluator = C.Evaluator(C.classification_error(model, labels))
+    input_map = {
+       features : reader.streams.features,
+       labels: reader.streams.labels
+    }
+    
+    minibatch_size = 2000
+    test_result = 0.0
+    num_minibatches = 0
+    data = reader.next_minibatch(minibatch_size, input_map = input_map)
+    while bool(data):
+        test_result = test_result + evaluator.test_minibatch(data)
+        num_minibatches += 1
+        data = reader.next_minibatch(minibatch_size, input_map = input_map)
+    return None if num_minibatches == 0 else test_result*100 / num_minibatches
 
 
 ### Model training
@@ -84,28 +104,12 @@ z = create_mlr_model(features/255.0, num_output_classes)
 # Create the reader to the training data set
 train_file = "../../Data/MNIST_train.txt"
 reader = create_reader(train_file, True, input_dim, num_output_classes)
-train_model_with_SGD(z, features, labels, reader)
+num_samples_per_sweep = 50000
+num_sweeps = 10
+train_model_with_SGD(z, features, labels, reader, num_samples_per_sweep, num_sweeps)
 
 ### Model evaluation
 #
-# Define the evaluater function 
-def test_model(model, features, labels, reader):
-    evaluator = C.Evaluator(C.classification_error(model, labels))
-    input_map = {
-       features : reader.streams.features,
-       labels: reader.streams.labels
-    }
-    
-    minibatch_size = 2000
-    test_result = 0.0
-    num_minibatches = 0
-    data = reader.next_minibatch(minibatch_size, input_map = input_map)
-    while bool(data):
-        test_result = test_result + evaluator.test_minibatch(data)
-        num_minibatches += 1
-        data = reader.next_minibatch(minibatch_size, input_map = input_map)
-    return None if num_minibatches == 0 else test_result*100 / num_minibatches
-
 validation_file = "../../Data/MNIST_validate.txt"
 reader = create_reader(validation_file, False, input_dim, num_output_classes)
 error_rate = test_model(z, features, labels, reader)

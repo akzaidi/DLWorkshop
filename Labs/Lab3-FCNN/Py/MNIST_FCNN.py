@@ -15,6 +15,10 @@ from cntk.logging.progress_print import ProgressPrinter
 #C.device.try_set_default_device(C.device.cpu())
 C.device.try_set_default_device(C.device.gpu(0))
 
+#
+# Helper functions
+#
+
 # Ensure we always get the same amount of randomness
 np.random.seed(0)
 
@@ -34,8 +38,8 @@ def create_fcnn_model(features, num_hidden_layers, hidden_layers_dim, num_output
         r = C.layers.Dense(num_output_classes, activation = None)(h)
         return r
 
-# Define a trainer using a given reader and the SGD learner 
-def train_model_with_SGD(model, features, labels, reader):
+# Define the trainer using  the SGD learner 
+def train_model_with_SGD(model, features, labels, reader, num_samples_per_sweep, num_sweeps):
  
     # Define loss and error functions
     loss = C.cross_entropy_with_softmax(model, labels)
@@ -50,9 +54,7 @@ def train_model_with_SGD(model, features, labels, reader):
 
    # Initialize the parameters for the trainer
     minibatch_size = 64
-    num_samples_per_sweep = 50000
-    num_sweeps_to_train_with = 10
-    num_minibatches_to_train = (num_samples_per_sweep * num_sweeps_to_train_with) / minibatch_size
+    num_minibatches_to_train = (num_samples_per_sweep * num_sweeps) / minibatch_size
 
        # Map the data streams to the input and labels.
     input_map = {
@@ -68,32 +70,6 @@ def train_model_with_SGD(model, features, labels, reader):
 
     print(time.time() - start_time)
 
-
-### Model training
-#
-# Define MNIST data dimensions
-input_dim = 784
-num_output_classes = 10
-
-# Configure hidden layers
-hidden_layers_dim = 400
-num_hidden_layers = 2
-
-# Create inputs for features and labels
-features = C.input(input_dim)
-labels = C.input(num_output_classes)
-
-# Create the MLR model while scaling the input to 0-1 range by dividing each pixel by 255.
-z = create_fcnn_model(features/255.0, num_hidden_layers, hidden_layers_dim, num_output_classes)
-
-# Create the reader to the training data set
-train_file = "../../Data/MNIST_train.txt"
-reader = create_reader(train_file, True, input_dim, num_output_classes)
-train_model_with_SGD(z, features, labels, reader)
-
-
-### Model evaluation
-#
 # Define the evaluater function 
 def test_model(model, features, labels, reader):
     evaluator = C.Evaluator(C.classification_error(model, labels))
@@ -112,10 +88,39 @@ def test_model(model, features, labels, reader):
         data = reader.next_minibatch(minibatch_size, input_map = input_map)
     return None if num_minibatches == 0 else test_result*100 / num_minibatches
 
+### Model training
+#
+# Define MNIST data dimensions
+input_dim = 784
+num_output_classes = 10
+
+# Configure hidden layers
+hidden_layers_dim = 400
+num_hidden_layers = 2
+
+# Create inputs for features and labels
+features = C.input(input_dim)
+labels = C.input(num_output_classes)
+
+# Create the MLR model while scaling the input to 0-1 range by dividing each pixel by 255.
+z = create_fcnn_model(features/255.0, num_hidden_layers, hidden_layers_dim, num_output_classes)
+
+# Configure and run the trainer 
+train_file = "../../Data/MNIST_train.txt"
+reader = create_reader(train_file, True, input_dim, num_output_classes)
+num_samples_per_sweep = 50000
+num_sweeps = 10
+train_model_with_SGD(z, features, labels, reader, num_samples_per_sweep, num_sweeps)
+
+
+### Model evaluation
+#
 validation_file = "../../Data/MNIST_validate.txt"
 reader = create_reader(validation_file, False, input_dim, num_output_classes)
 error_rate = test_model(z, features, labels, reader)
 print("Average validation error: {0:.2f}%".format(error_rate))
+
+
 
 ### Hackathon evaluation
 #

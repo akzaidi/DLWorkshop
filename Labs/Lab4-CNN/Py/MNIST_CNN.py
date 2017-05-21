@@ -15,6 +15,10 @@ from cntk.logging.progress_print import ProgressPrinter
 #C.device.try_set_default_device(C.device.cpu())
 C.device.try_set_default_device(C.device.gpu(0))
 
+#
+# Helper functions
+#
+
 # Ensure we always get the same amount of randomness
 np.random.seed(0)
 
@@ -131,7 +135,7 @@ labels = C.input(num_output_classes)
 # Create the CNN model while scaling the input to 0-1 range by dividing each pixel by 255.
 z = create_cnn1_model(features/255.0, num_output_classes)
 
-# Create the reader to the training data set
+# Configure and run the trainer 
 train_file = "../../Data/MNIST_train.txt"
 reader = create_reader(train_file, True, input_dim, num_output_classes)
 num_samples_per_sweep = 50000
