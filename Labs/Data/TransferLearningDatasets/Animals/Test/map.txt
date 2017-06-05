@@ -1,0 +1,13 @@
+/home/demouser/repos/DLWorkshop/Labs/Data/TransferLearningDatasets/Animals/Test/Sheep/Swaledale_sheep.jpg	0
+/home/demouser/repos/DLWorkshop/Labs/Data/TransferLearningDatasets/Animals/Test/Sheep/Icelandic_sheep_summer_06.jpg	0
+/home/demouser/repos/DLWorkshop/Labs/Data/TransferLearningDatasets/Animals/Test/Sheep/Romney_sheep,_ewe_with_triplet_lambs_in_New_Zealand.jpg	0
+/home/demouser/repos/DLWorkshop/Labs/Data/TransferLearningDatasets/Animals/Test/Sheep/Icelandic_breed_sheep.jpg	0
+/home/demouser/repos/DLWorkshop/Labs/Data/TransferLearningDatasets/Animals/Test/Sheep/Sheep,_Stodmarsh_6.jpg	0
+/home/demouser/repos/DLWorkshop/Labs/Data/TransferLearningDatasets/Animals/Test/Wolf/Iberian_Wolf.jpg	1
+/home/demouser/repos/DLWorkshop/Labs/Data/TransferLearningDatasets/Animals/Test/Wolf/9-wolf-profile-full.jpg	1
+/home/demouser/repos/DLWorkshop/Labs/Data/TransferLearningDatasets/Animals/Test/Wolf/Kolmarden_Wolf.jpg	1
+/home/demouser/repos/DLWorkshop/Labs/Data/TransferLearningDatasets/Animals/Test/Wolf/Canis_lupus_occidentalis.jpg	1
+/home/demouser/repos/DLWorkshop/Labs/Data/TransferLearningDatasets/Animals/Test/Wolf/The_white_wolf_by_Lunchi.jpg	1
+/home/demouser/repos/DLWorkshop/Labs/Data/TransferLearningDatasets/Animals/Test/Bird_in_flight_wings_spread.jpg	-1
+/home/demouser/repos/DLWorkshop/Labs/Data/TransferLearningDatasets/Animals/Test/quetzal-bird.jpg	-1
+/home/demouser/repos/DLWorkshop/Labs/Data/TransferLearningDatasets/Animals/Test/Weaver_bird.jpg	-1
