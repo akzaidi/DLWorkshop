@@ -18,8 +18,8 @@ sudo apt-get install gcc
 3. Download and verify CUDA
 ```
 cd
-mkdir CUDA
-cd CUDA
+mkdir Downloads
+cd Downloads
 wget https://developer.nvidia.com/compute/cuda/8.0/Prod2/local_installers/cuda-repo-ubuntu1604-8-0-local-ga2_8.0.61-1_amd64-deb
 md5sum cuda-repo-ubuntu1604-8-0-local-ga2_8.0.61-1_amd64-deb
 ```
@@ -39,6 +39,26 @@ export PATH=/usr/local/cuda-8.0/bin${PATH:+:${PATH}}
 ```
 nvidia-smi
 ```
+### Install Anaconda
+1. Download Anaconda installer
+```
+cd ~/Downloads
+wget https://repo.continuum.io/archive/Anaconda3-4.4.0-Linux-x86_64.sh
+```
+2. Install Anaconda 
+   
+   Use defaults for all prompts but the last one - say *yes* to modifying PATH
+```
+bash ~/Downloads/Anaconda3-4.4.0-Linux-x86_64.sh
+```
+
+   Logout and login again
+3. Verify installation
+```
+python
+```
+
+
 
 
 
