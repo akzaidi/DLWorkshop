@@ -10,25 +10,15 @@
 ```
 ssh <username>@<machine name>
 ```
-2. Install *gcc*
+2. Download and install CUDA drivers
 ```
-sudo apt-get update
-sudo apt-get install gcc
-```
-3. Download and verify CUDA
-```
-cd
-mkdir Downloads
-cd Downloads
-wget https://developer.nvidia.com/compute/cuda/8.0/Prod2/local_installers/cuda-repo-ubuntu1604-8-0-local-ga2_8.0.61-1_amd64-deb
-md5sum cuda-repo-ubuntu1604-8-0-local-ga2_8.0.61-1_amd64-deb
-```
-4. Install CUDA
-```
-sudo dpkg -i cuda-repo-ubuntu1604-8-0-local-ga2_8.0.61-1_amd64-deb
+CUDA_REPO_PKG=cuda-repo-ubuntu1604_8.0.61-1_amd64.deb
+wget -O /tmp/${CUDA_REPO_PKG} http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/${CUDA_REPO_PKG} 
+sudo dpkg -i /tmp/${CUDA_REPO_PKG}
+rm -f /tmp/${CUDA_REPO_PKG}
 sudo apt-get update
 sudo apt-get install cuda-drivers
-```  
+```
 6. Verify installation
 ```
 nvidia-smi
