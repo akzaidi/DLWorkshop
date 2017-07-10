@@ -34,7 +34,8 @@ sudo apt-get install cuda-drivers
 nvidia-smi
 ```
 You should see the output similar to the following
-![alt text]https://docs.microsoft.com/en-us/azure/virtual-machines/linux/media/n-series-driver-setup/smi.png
+
+![alt text](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/media/n-series-driver-setup/smi.png)
 
 ### Install Anaconda
 1. Download Anaconda installer
