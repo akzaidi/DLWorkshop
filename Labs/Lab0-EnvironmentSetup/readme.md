@@ -30,22 +30,19 @@ You should see the output similar to the following
 ### Install Anaconda
 1. Download Anaconda installer
 ```
-cd ~/Downloads
-wget https://repo.continuum.io/archive/Anaconda3-4.4.0-Linux-x86_64.sh
+ANACONDA_INSTALLER=Anaconda3-4.3.1-Linux-x86_64.sh
+wget -O /tmp/${ANACONDA_INSTALLER} https://repo.continuum.io/archive/${ANACONDA_INSTALLER}
+
 ```
 2. Install Anaconda 
    
    Use defaults for all prompts but the last one - say *yes* to modifying PATH
 ```
-bash ~/Downloads/Anaconda3-4.4.0-Linux-x86_64.sh
+bash /tmp/${ANACONDA_INSTALLER}
 ```
 
    Logout and login again
    
-3. Verify installation
-```
-python
-```
 
 ### Install CNTK
 
