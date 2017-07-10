@@ -27,18 +27,15 @@ md5sum cuda-repo-ubuntu1604-8-0-local-ga2_8.0.61-1_amd64-deb
 ```
 sudo dpkg -i cuda-repo-ubuntu1604-8-0-local-ga2_8.0.61-1_amd64-deb
 sudo apt-get update
-sudo apt-get install cuda
-```
-5. Post-installation actions
-
-    Add the following path to your PATH variable by modifing *.bashrc*
-```
-export PATH=/usr/local/cuda-8.0/bin${PATH:+:${PATH}}
-```    
+sudo apt-get install cuda-drivers
+```  
 6. Verify installation
 ```
 nvidia-smi
 ```
+You should see the output similar to the following
+![alt text]https://docs.microsoft.com/en-us/azure/virtual-machines/linux/media/n-series-driver-setup/smi.png
+
 ### Install Anaconda
 1. Download Anaconda installer
 ```
@@ -53,10 +50,14 @@ bash ~/Downloads/Anaconda3-4.4.0-Linux-x86_64.sh
 ```
 
    Logout and login again
+   
 3. Verify installation
 ```
 python
 ```
+
+### Install CNTK
+
 
 
 
