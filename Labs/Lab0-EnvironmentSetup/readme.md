@@ -60,7 +60,15 @@ python -c "import cntk; print(cntk.__version__)"
 
 ## Set up Lab Repo
 ```
+mkdir ~/repos
+cd ~/repos
+git clone https://github.com/jarokaz/DLWorkshop.git
 ```
+## Start Jupyter
+```
+jupyter notebook
+```
+
 
 
 
