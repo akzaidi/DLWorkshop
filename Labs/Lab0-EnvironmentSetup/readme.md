@@ -66,7 +66,7 @@ git clone https://github.com/jarokaz/DLWorkshop.git
 ```
 ## Start Jupyter
 ```
-jupyter notebook
+jupyter notebook --ip <your ip address>
 ```
 
 
