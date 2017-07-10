@@ -27,7 +27,7 @@ You should see the output similar to the following
 
 ![alt text](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/media/n-series-driver-setup/smi.png)
 
-### Install Anaconda
+## Install Anaconda
 1. Download Anaconda installer
 ```
 ANACONDA_INSTALLER=Anaconda3-4.3.1-Linux-x86_64.sh
@@ -44,7 +44,7 @@ bash /tmp/${ANACONDA_INSTALLER}
 3. Logout and login again
    
 
-### Install CNTK
+## Install CNTK
 1. Install OpenMPI 1.10.x
 ```
 sudo apt-get install openmpi-bin
@@ -58,8 +58,9 @@ pip install https://cntk.ai/PythonWheel/GPU/cntk-2.0-cp36-cp36m-linux_x86_64.whl
 python -c "import cntk; print(cntk.__version__)"
 ```
 
-
-
+## Set up Lab Repo
+```
+```
 
 
 
