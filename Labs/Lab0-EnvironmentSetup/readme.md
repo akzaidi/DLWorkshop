@@ -30,11 +30,13 @@ sudo apt-get update
 sudo apt-get install cuda
 ```
 5. Post-installation actions
-- Add the following path to your PATH variable by modifing *.bashrc*
+
+Add the following path to your PATH variable by modifing *.bashrc*
 ```
 export PATH=/usr/local/cuda-8.0/bin${PATH:+:${PATH}}
 ```
-- Logout and login again to update PATH
+
+Logout and login again to update PATH
 
 6. Verify installation
 ```
