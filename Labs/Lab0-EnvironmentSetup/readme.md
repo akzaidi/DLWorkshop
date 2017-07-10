@@ -41,10 +41,23 @@ wget -O /tmp/${ANACONDA_INSTALLER} https://repo.continuum.io/archive/${ANACONDA_
 bash /tmp/${ANACONDA_INSTALLER}
 ```
 
-   Logout and login again
+3. Logout and login again
    
 
 ### Install CNTK
+1. Install OpenMPI 1.10.x
+```
+sudo apt-get install openmpi-bin
+```
+2. Install CNTK wheel for GPU and Python 3.6
+```
+pip install https://cntk.ai/PythonWheel/GPU/cntk-2.0-cp36-cp36m-linux_x86_64.whl
+```
+3. Verify installation
+```
+python -c "import cntk; print(cntk.__version__)"
+```
+
 
 
 
