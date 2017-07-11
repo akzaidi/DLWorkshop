@@ -65,6 +65,11 @@ cd ~/repos
 git clone https://github.com/jarokaz/DLWorkshop.git
 ```
 ## Start Jupyter
+1. Check your IP address
+```
+ifconfig
+```
+2. Start Jupyter
 ```
 jupyter notebook --ip <your ip address>
 ```
