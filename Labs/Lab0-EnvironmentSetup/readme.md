@@ -58,6 +58,12 @@ pip install https://cntk.ai/PythonWheel/GPU/cntk-2.0-cp36-cp36m-linux_x86_64.whl
 python -c "import cntk; print(cntk.__version__)"
 ```
 
+## Install helper utilities
+```
+sudo apt install python-pydot python-pydot-ng graphviz
+pip install pydot_ng
+```
+
 ## Set up Lab Repo
 ```
 mkdir ~/repos
