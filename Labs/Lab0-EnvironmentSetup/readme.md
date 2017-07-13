@@ -61,6 +61,7 @@ python -c "import cntk; print(cntk.__version__)"
 ## Install helper utilities
 ```
 sudo apt install python-pydot python-pydot-ng graphviz
+pip install pydot_ng
 ```
 
 ## Set up Lab Repo
